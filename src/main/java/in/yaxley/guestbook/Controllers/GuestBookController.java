@@ -4,12 +4,11 @@ import in.yaxley.guestbook.Models.GuestBookEntry;
 import in.yaxley.guestbook.Repositories.GuestBookEntryRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Calendar;
 import java.util.List;
-
-import static org.springframework.http.HttpStatus.I_AM_A_TEAPOT;
 
 
 @RestController
@@ -55,10 +54,8 @@ public class GuestBookController {
 
 @ControllerAdvice
 class TeapotExceptionAdvice {
-    @SuppressWarnings("deprecation")
     @ExceptionHandler(GuestBookController.TeapotException.class)
-    @ResponseStatus(I_AM_A_TEAPOT)
-    public void iAmATeapot() {
-        // do nothing
+    public ResponseEntity<String> iAmATeapot() {
+        return ResponseEntity.status(418).body("I am a teapot, short and stout; tip me over and pour me out.");
     }
 }
