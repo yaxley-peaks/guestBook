@@ -45,7 +45,7 @@ public class GuestBookController {
         gbe.setIp(request.getRemoteAddr());
         gbe.setSubmittedOn(Calendar.getInstance().getTime());
         guestBookEntryRepository.save(gbe);
-        return new GuestBookEntry();
+        return gbe;
     }
 
     public static class TeapotException extends Exception {
