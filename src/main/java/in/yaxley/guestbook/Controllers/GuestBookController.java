@@ -4,6 +4,7 @@ import in.yaxley.guestbook.Models.GuestBookEntry;
 import in.yaxley.guestbook.Repositories.GuestBookEntryRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,10 +28,16 @@ public class GuestBookController {
 
     @GetMapping("/")
     public List<GuestBookEntry> index() {
-        return guestBookEntryRepository.findAll();
+        var gbes = guestBookEntryRepository.findAll();
+        // censor IP
+        for (GuestBookEntry gbe : gbes) {
+            gbe.setIp("nuh uh");
+        }
+        return gbes;
     }
 
     @PostMapping("/add")
+    @ResponseStatus(HttpStatus.CREATED)
     public GuestBookEntry add(@RequestBody PostDto dto, HttpServletRequest request) {
         GuestBookEntry gbe = new GuestBookEntry();
         gbe.setSubmitter(dto.submitter);
