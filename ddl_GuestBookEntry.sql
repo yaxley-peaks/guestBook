@@ -7,12 +7,4 @@ CREATE TABLE guest_book_entry
     ip           VARCHAR(255),
     CONSTRAINT pk_guestbookentry PRIMARY KEY (id)
 );
-CREATE TABLE guest_book_entry
-(
-    id           BIGINT NOT NULL,
-    submitter    VARCHAR(255),
-    message      VARCHAR(255),
-    submitted_on TIMESTAMP WITHOUT TIME ZONE,
-    ip           VARCHAR(255),
-    CONSTRAINT pk_guestbookentry PRIMARY KEY (id)
-);
+CREATE SEQUENCE guest_book_entry_seq;
