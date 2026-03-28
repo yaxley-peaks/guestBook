@@ -10,7 +10,7 @@
     </parent>
     <groupId>in.yaxley</groupId>
     <artifactId>guestBook</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <name>guestBook</name>
     <description>guestBook</description>
     <url/>

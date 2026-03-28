@@ -13,6 +13,7 @@ import java.util.List;
 
 
 @RestController
+@CrossOrigin
 public class GuestBookController {
     GuestBookEntryRepository guestBookEntryRepository;
 
