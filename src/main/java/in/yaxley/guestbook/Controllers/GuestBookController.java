@@ -3,12 +3,14 @@ package in.yaxley.guestbook.Controllers;
 import in.yaxley.guestbook.Models.GuestBookEntry;
 import in.yaxley.guestbook.Repositories.GuestBookEntryRepository;
 import jakarta.servlet.http.HttpServletRequest;
+import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 
@@ -37,16 +39,33 @@ public class GuestBookController {
         return gbes;
     }
 
+    @SuppressWarnings("JvmTaintAnalysis")
     @PostMapping("/add")
-    @ResponseStatus(HttpStatus.CREATED)
-    public GuestBookEntry add(@RequestBody PostDto dto, HttpServletRequest request) {
+    public ResponseEntity<GuestBookEntry> add(@RequestBody PostDto dto, HttpServletRequest request) {
+
+        final String remoteIp = request.getRemoteAddr();
+        var cal = Calendar.getInstance();
+        cal.add(Calendar.HOUR, -24);
+        final Date oneDayAgo = cal.getTime();
+
+        final int count = guestBookEntryRepository.findByIpAndSubmittedOnAfter(remoteIp, oneDayAgo).size();
+        if(count > 0) {
+            return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).build();
+        }
+
+
+        String submitter = dto.submitter;
+        submitter = StringEscapeUtils.escapeHtml4(submitter);
+        String message = dto.message;
+        message = StringEscapeUtils.escapeHtml4(message);
+
         GuestBookEntry gbe = new GuestBookEntry();
-        gbe.setSubmitter(dto.submitter);
-        gbe.setMessage(dto.message);
-        gbe.setIp(request.getRemoteAddr());
+        gbe.setSubmitter(submitter);
+        gbe.setMessage(message);
+        gbe.setIp(remoteIp);
         gbe.setSubmittedOn(Calendar.getInstance().getTime());
         guestBookEntryRepository.save(gbe);
-        return gbe;
+        return ResponseEntity.status(HttpStatus.CREATED).body(gbe);
     }
 
     public static class TeapotException extends Exception {
