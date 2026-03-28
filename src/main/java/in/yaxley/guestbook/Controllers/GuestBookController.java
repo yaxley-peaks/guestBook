@@ -50,7 +50,8 @@ public class GuestBookController {
 
         final int count = guestBookEntryRepository.findByIpAndSubmittedOnAfter(remoteIp, oneDayAgo).size();
         if(count > 0) {
-            return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).build();
+            final String oneDaySeconds = String.valueOf(24 * 60 * 60);
+            return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).header("Retry-After", oneDaySeconds).build();
         }
 
 
